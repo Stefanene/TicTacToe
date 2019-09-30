@@ -1,5 +1,5 @@
+//TicTacToe, hardcoded by Stefan Ene, Finished on 9/30/2019
 #include <iostream>
-#include <string.h>
 
 using namespace std;
 
