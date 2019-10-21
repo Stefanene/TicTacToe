@@ -4,34 +4,41 @@
 using namespace std;
 
 //functions
-void drawBoard();
-void clearBoard();
+void drawBoard(char bd[3][3]);
 int readInputRow(char in[2]);
 int readInputColumn(char in[2]);
-void checkWin();
-void checkTie();
+char checkWin(char bd[3][3]);
+char checkTie(char bd[3][3]);
 
-//variables
-char board[3][3];
-char input[2];
-bool end = false;
-char winner;
-char oplay = 'O';
-char xplay = 'X';
-bool xturn = true;
 
 //main
 int main() {
+  char board[3][3];
+  char input[2];
+  char winner;
+  bool xturn = true;
+  bool end = false;
+ 
   char stillPlaying = 'y';
   int xwins = 0;
   int owins = 0;
   int ties = 0;
+
+  char xplay = 'X';
+  char oplay = 'O';
   
   //game
   while(stillPlaying == 'y') {
     //reset board
-    clearBoard();
-    drawBoard();
+    for (int c = 0; c < 3; c++) {
+      for (int r = 0; r < 3; r++) {
+	board[r][c] = ' ';
+      }
+    }
+    winner = ' ';
+    end = false;
+    xturn = true;
+    drawBoard(board);
     while(end == false) {
       //if x turn
       if (xturn) {
@@ -41,7 +48,7 @@ int main() {
 	while (move) {
 	  if (board[readInputRow(input)][readInputColumn(input)] == ' ') {
 	    board[readInputRow(input)][readInputColumn(input)] = xplay;
-	    drawBoard();
+	    drawBoard(board);
 	    move = false;
 	  } else {
 	    cout << "Move not possible. Try again: " << endl;
@@ -51,8 +58,14 @@ int main() {
 	}
 	//switch to O move and check for wins/ties
 	xturn = false;
-	checkWin();
-	checkTie();
+	winner = checkWin(board);
+	char wintie = checkTie(board);
+	if (winner == xplay || winner == oplay) {
+	  end = true;
+	}
+	if (wintie == 't') {
+	  end = true;
+	}
 	//if O move
       } else {
         cout << "O Move: " << endl;
@@ -61,7 +74,7 @@ int main() {
 	while(move) {
 	  if (board[readInputRow(input)][readInputColumn(input)] == ' ') {
 	    board[readInputRow(input)][readInputColumn(input)] = oplay;
-	    drawBoard();
+	    drawBoard(board);
 	    move = false;
 	  } else {
 	    cout << "Move not possible. Try again: " << endl;
@@ -71,7 +84,14 @@ int main() {
 	}
 	//switch to X move and check for wins/ties
 	xturn = true;
-	checkWin();
+	winner = checkWin(board);
+	char wintie = checkTie(board);
+	if (winner == xplay || winner == oplay){
+	  end = true;
+	}
+	if (wintie == 't') {
+	  end = true;
+	}
       } 
     }
     //if game is done (board is full)
@@ -115,40 +135,26 @@ int main() {
 }
 
 //draw board function
-void drawBoard() {
+void drawBoard(char bd[3][3]) {
   cout << "  1 2 3" << endl;
   cout << "a ";
   //write a row
   for (int i = 0; i < 3; i++) {
-    cout <<  board[i][0] << " ";
+    cout <<  bd[i][0] << " ";
   }
   cout << endl;
   cout << "b ";
   //write b row
   for (int i = 0; i < 3; i++) {
-    cout << board[i][1] << " ";
+    cout << bd[i][1] << " ";
   }
   cout << endl;
   cout << "c ";
   //write c row
   for (int i = 0; i < 3; i++) {
-    cout << board[i][2] << " ";
+    cout << bd[i][2] << " ";
   }
   cout << endl;
-}
-
-//clear board function
-void clearBoard() {
-  //set whole board to empty
-  for (int column = 0; column < 3; column++) {
-    for (int row = 0; row < 3; row++) {
-      board[row][column] = ' ';
-    }
-  }
-  //reset win conditions
-  winner = ' ';
-  end = false;
-  xturn = true;
 }
 
 //read second char of input (for column position)
@@ -173,70 +179,74 @@ int readInputColumn(char in[2]) {
   }
 }
 
-void checkWin() {
+char checkWin(char bd[3][3]) {
+  char xplay = 'X';
+  char oplay = 'O';
   //begin X check wins
-  if (board[0][0] == xplay && board[0][1] == xplay && board[0][2] == xplay) {
-    end = true;
-    winner = xplay;
-  } else if (board[1][0] == xplay && board[1][1] == xplay && board[1][2] == xplay) {
-    end = true;
-    winner = xplay;
-  } else if (board[2][0] == xplay && board[2][1] == xplay && board[2][2] == xplay) {
-    end = true;
-    winner = xplay;
-  } else if (board[0][0] == xplay && board[1][0] == xplay && board[2][0] == xplay) {
-    end = true;
-    winner = xplay;
-  } else if (board[0][1] == xplay && board[1][1] == xplay && board[2][1] == xplay) {
-    end = true;
-    winner = xplay;
-  } else if (board[0][2] == xplay && board[1][2] == xplay && board[2][2] == xplay) {
-    end = true;
-    winner = xplay;
-  } else if (board[0][0] == xplay && board[1][1] == xplay && board[2][2] == xplay) {
-    end = true;
-    winner = xplay;
-  } else if (board[0][2] == xplay && board[1][1] == xplay && board[2][0] == xplay) {
-    end = true;
-    winner = xplay;
+  if (bd[0][0] == xplay && bd[0][1] == xplay && bd[0][2] == xplay) {
+    
+    return xplay;
+  } else if (bd[1][0] == xplay && bd[1][1] == xplay && bd[1][2] == xplay) {
+    
+    return xplay;
+  } else if (bd[2][0] == xplay && bd[2][1] == xplay && bd[2][2] == xplay) {
+    
+    return xplay;
+  } else if (bd[0][0] == xplay && bd[1][0] == xplay && bd[2][0] == xplay) {
+    
+    return xplay;
+  } else if (bd[0][1] == xplay && bd[1][1] == xplay && bd[2][1] == xplay) {
+    
+    return xplay;
+  } else if (bd[0][2] == xplay && bd[1][2] == xplay && bd[2][2] == xplay) {
+    
+    return xplay; 
+  } else if (bd[0][0] == xplay && bd[1][1] == xplay && bd[2][2] == xplay) {
+    
+    return xplay; 
+  } else if (bd[0][2] == xplay && bd[1][1] == xplay && bd[2][0] == xplay) {
+    
+    return xplay;
   }
   //begin O check wins
-  else if (board[0][0] == oplay && board[0][1] == oplay && board[0][2] == oplay) {
-    end = true;
-    winner = oplay;
-  } else if (board[1][0] == oplay && board[1][1] == oplay && board[1][2] == oplay) {
-    end = true;
-    winner = oplay;
-  } else if (board[2][0] == oplay && board[2][1] == oplay && board[2][2] == oplay) {
-    end = true;
-    winner = oplay;
-  } else if (board[0][0] == oplay && board[1][0] == oplay && board[2][0] == oplay) {
-    end = true;
-    winner = oplay;
-  } else if (board[0][1] == oplay && board[1][1] == oplay && board[2][1] == oplay) {
-    end = true;
-    winner = oplay;
-  } else if (board[0][2] == oplay && board[1][2] == oplay && board[2][2] == oplay) {
-    end = true;
-    winner = oplay;
-  } else if (board[0][0] == oplay && board[1][1] == oplay && board[2][2] == oplay) {
-    end = true;
-    winner = oplay;
-  } else if (board[0][2] == oplay && board[1][1] == oplay && board[2][0] == oplay) {
-    end = true;
-    winner = oplay;
+  else if (bd[0][0] == oplay && bd[0][1] == oplay && bd[0][2] == oplay) {
+    
+    return oplay;
+  } else if (bd[1][0] == oplay && bd[1][1] == oplay && bd[1][2] == oplay) {
+    
+    return oplay;
+  } else if (bd[2][0] == oplay && bd[2][1] == oplay && bd[2][2] == oplay) {
+    
+    return oplay;
+  } else if (bd[0][0] == oplay && bd[1][0] == oplay && bd[2][0] == oplay) {
+    
+    return oplay;
+  } else if (bd[0][1] == oplay && bd[1][1] == oplay && bd[2][1] == oplay) {
+    
+    return oplay;
+  } else if (bd[0][2] == oplay && bd[1][2] == oplay && bd[2][2] == oplay) {
+    
+    return oplay;
+  } else if (bd[0][0] == oplay && bd[1][1] == oplay && bd[2][2] == oplay) {
+    
+    return oplay;
+  } else if (bd[0][2] == oplay && bd[1][1] == oplay && bd[2][0] == oplay) {
+    
+    return oplay;
   } else {
-    checkTie();
+    return ' ';
   }
 }
 
 //check for tie function
-void checkTie() {
+char checkTie(char bd[3][3]) {
   //if whole board is full
-  if (end == false && board[0][0] != ' ' && board[0][1] != ' ' && board[0][2] != ' '
-       && board[1][0] != ' ' && board[1][1] != ' ' && board[1][2] != ' '
-      && board[2][0] != ' ' && board[2][1] != ' ' && board[2][2] != ' ') {
-    end = true;
-    winner = 't';
+  if (bd[0][0] != ' ' && bd[0][1] != ' ' && bd[0][2] != ' '
+       && bd[1][0] != ' ' && bd[1][1] != ' ' && bd[1][2] != ' '
+      && bd[2][0] != ' ' && bd[2][1] != ' ' && bd[2][2] != ' ') {
+    
+    return 't';
+  } else {
+    return ' ';
   }
 }
